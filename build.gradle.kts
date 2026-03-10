@@ -107,7 +107,6 @@ tasks {
         val baseHooksDir = File(File(rootProject.rootDir, "scripts"), "hooks")
         from(File(baseHooksDir, "pre-commit"))
         into(File(rootProject.rootDir, ".git/hooks"))
-//        fileMode = 0b000_111_101_101 // 0755 in binary, it doesn't seem to work if I put 755 or 0755
     }
 
     // Install hooks automatically before building a new compilation
