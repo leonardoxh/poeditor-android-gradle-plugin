@@ -167,7 +167,7 @@ open class PoEditorPluginExtension @Inject constructor(objects: ObjectFactory, p
      */
     @get:Optional
     @get:Input
-    val untranslatableStringsRegex: Property<String?> = objects.property(String::class.java)
+    val untranslatableStringsRegex: Property<String> = objects.property(String::class.java)
 
     /**
      * Whether to include comments from the downloaded strings.

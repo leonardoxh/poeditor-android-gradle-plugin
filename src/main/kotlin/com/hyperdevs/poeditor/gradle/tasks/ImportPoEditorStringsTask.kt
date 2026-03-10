@@ -166,7 +166,7 @@ abstract class ImportPoEditorStringsTask @Inject constructor() : DefaultTask() {
      */
     @get:Optional
     @get:Input
-    abstract val untranslatableStringsRegex: Property<String?>
+    abstract val untranslatableStringsRegex: Property<String>
 
     /**
      * Whether to include comments from the downloaded strings.

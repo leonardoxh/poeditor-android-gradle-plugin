@@ -20,6 +20,7 @@ package com.hyperdevs.poeditor.gradle.network.api
 
 import java.lang.IllegalArgumentException
 import java.util.Date
+import java.util.Locale.getDefault
 
 /**
  * Basic PoEditor response. Contains common fields for all responses in the API.
@@ -87,10 +88,14 @@ enum class ExportType {
         /** Returns the enum value associated to a string value. */
         fun from(value: String) =
             try {
-                valueOf(value.toUpperCase())
+                valueOf(value.uppercase(getDefault()))
             } catch (e: Exception) {
                 val message = "Value \"$value\" is not a valid ${this::class.java.declaringClass.simpleName}; " +
-                              "allowed values are: ${values().joinToString(", ") { "\"${it.name.toLowerCase()}\"" }}"
+                              "allowed values are: ${entries.joinToString(", ") { "\"${
+                                  it.name.lowercase(
+                                      getDefault()
+                                  )
+                              }\"" }}"
                 throw IllegalArgumentException(message)
             }
     }
@@ -113,10 +118,15 @@ enum class FilterType {
         /** Returns the enum value associated to a string value. */
         fun from(value: String) =
             try {
-                valueOf(value.toUpperCase())
+                valueOf(value.uppercase(getDefault()))
             } catch (e: Exception) {
                 val message = "Value \"$value\" is not a valid ${this::class.java.declaringClass.simpleName}; " +
-                              "allowed values are: ${values().joinToString(", ") { "\"${it.name.toLowerCase()}\"" }}"
+                              "allowed values are: ${
+                                  entries.joinToString(", ") { "\"${
+                                  it.name.lowercase(
+                                      getDefault()
+                                  )
+                              }\"" }}"
                 throw IllegalArgumentException(message)
             }
     }
@@ -133,10 +143,14 @@ enum class OrderType {
         /** Returns the enum value associated to a string value. */
         fun from(value: String) =
             try {
-                valueOf(value.toUpperCase())
+                valueOf(value.uppercase(getDefault()))
             } catch (e: Exception) {
                 val message = "Value \"$value\" is not a valid ${this::class.java.declaringClass.simpleName}; " +
-                              "allowed values are: ${values().joinToString(", ") { "\"${it.name.toLowerCase()}\"" }}"
+                              "allowed values are: ${entries.joinToString(", ") { "\"${
+                                  it.name.lowercase(
+                                      getDefault()
+                                  )
+                              }\"" }}"
                 throw IllegalArgumentException(message)
             }
     }
