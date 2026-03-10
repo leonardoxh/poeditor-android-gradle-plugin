@@ -67,8 +67,8 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.toVersion(libs.versions.java.sdk.get())
-    targetCompatibility = JavaVersion.toVersion(libs.versions.java.sdk.get())
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 
     withJavadocJar()
     withSourcesJar()
@@ -99,7 +99,7 @@ tasks {
 
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         compilerOptions {
-            jvmTarget.set(JvmTarget.fromTarget(libs.versions.java.sdk.get()))
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
