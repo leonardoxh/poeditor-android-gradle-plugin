@@ -18,12 +18,13 @@
 
 package com.hyperdevs.poeditor.gradle
 
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.LibraryPlugin
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import com.hyperdevs.poeditor.gradle.extensions.registerNewTask
 import com.hyperdevs.poeditor.gradle.tasks.ImportPoEditorStringsTask
 import com.hyperdevs.poeditor.gradle.utils.*
@@ -80,8 +81,9 @@ class PoEditorPlugin : Plugin<Project> {
                                  mainExtension: PoEditorPluginExtension) {
         // Add android.poEditorConfig extension container so we can set-up flavors and build types
         // configurations with Android app modules.
-        val configsExtensionContainer = project.container<PoEditorPluginExtension>()
-        val androidExtension = project.the<BaseAppModuleExtension>()
+        val configsExtensionContainer =
+            project.objects.domainObjectContainer(PoEditorPluginExtension::class.java)
+        val androidExtension = project.the<ApplicationExtension>()
         val androidComponentsExtension = project.the<ApplicationAndroidComponentsExtension>()
         (androidExtension as ExtensionAware).extensions.add(POEDITOR_CONFIG_NAME, configsExtensionContainer)
 
@@ -102,16 +104,16 @@ class PoEditorPlugin : Plugin<Project> {
         }
 
         project.afterEvaluate {
-            val allPossibleConfigNames: Set<String> by lazy {
-                androidExtension.applicationVariants.flatMapTo(mutableSetOf()) {
-                    listOf(it.buildType.name) + it.productFlavors.map { it.name }
-                }
-            }
-
             verifyAndLinkTasks(configsExtensionContainer,
-                allPossibleConfigNames,
+                androidExtension.getAllPossibleConfigNames(),
                 configPoEditorTaskProvidersMap,
                 project)
+        }
+    }
+
+    private fun CommonExtension.getAllPossibleConfigNames(): Set<String> {
+        return productFlavors.flatMapTo(mutableSetOf()) { flavor ->
+            buildTypes.flatMap { buildType -> listOf(flavor.name, buildType.name) }
         }
     }
 
@@ -119,7 +121,8 @@ class PoEditorPlugin : Plugin<Project> {
                                  mainExtension: PoEditorPluginExtension) {
         // Add android.poEditorConfig extension container so we can set-up flavors and build types
         // configurations with Android library modules.
-        val configsExtensionContainer = project.container<PoEditorPluginExtension>()
+        val configsExtensionContainer =
+            project.objects.domainObjectContainer(PoEditorPluginExtension::class.java)
         val androidExtension = project.the<LibraryExtension>()
         val androidComponentsExtension = project.the<LibraryAndroidComponentsExtension>()
         (androidExtension as ExtensionAware).extensions.add(POEDITOR_CONFIG_NAME, configsExtensionContainer)
@@ -141,14 +144,8 @@ class PoEditorPlugin : Plugin<Project> {
         }
 
         project.afterEvaluate {
-            val allPossibleConfigNames: Set<String> by lazy {
-                androidExtension.libraryVariants.flatMapTo(mutableSetOf()) {
-                    listOf(it.buildType.name) + it.productFlavors.map { it.name }
-                }
-            }
-
             verifyAndLinkTasks(configsExtensionContainer,
-                allPossibleConfigNames,
+                androidExtension.getAllPossibleConfigNames(),
                 configPoEditorTaskProvidersMap,
                 project)
         }
