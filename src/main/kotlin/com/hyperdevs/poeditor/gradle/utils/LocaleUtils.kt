@@ -18,6 +18,8 @@
 
 package com.hyperdevs.poeditor.gradle.utils
 
+import java.util.Locale.getDefault
+
 /**
  * Creates values file modifier taking into account specializations (i.e values-es-rMX for Mexican).
  * @param langCode
@@ -26,7 +28,7 @@ package com.hyperdevs.poeditor.gradle.utils
 fun createValuesModifierFromLangCode(langCode: String): String {
     val langParts = langCode.split("-")
     val language = langParts[0]
-    val region = langParts.getOrNull(1)?.toLowerCase()
+    val region = langParts.getOrNull(1)?.lowercase(getDefault())
 
     return when (language) {
         "zh" -> {
@@ -43,7 +45,7 @@ fun createValuesModifierFromLangCode(langCode: String): String {
         }
 
         else -> {
-            "$language${region?.let { "-r${it.toUpperCase()}" } ?: ""}"
+            "$language${region?.let { "-r${it.uppercase(getDefault())}" } ?: ""}"
         }
     }
 }
@@ -71,11 +73,15 @@ private fun handleChineseVariants(language: String, region: String?) = when (reg
     }
 
     "hans", "hant" -> {
-        "b+$language${region.let { "+${it.toLowerCase().capitalize()}" }}"
+        "b+$language${region.let { region ->
+            "+${
+            region.lowercase(getDefault())
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }
+        }" }}"
     }
 
     else -> {
-        "$language${region?.let { "-r${it.toUpperCase()}" } ?: ""}"
+        "$language${region?.let { "-r${it.uppercase(getDefault())}" } ?: ""}"
     }
 }
 
@@ -108,5 +114,5 @@ private fun handleOldLocaleVariants(language: String, region: String?): String {
         else -> language
     }
 
-    return "$oldLanguageCode${region?.let { "-r${it.toUpperCase()}" } ?: ""}"
+    return "$oldLanguageCode${region?.let { "-r${it.uppercase(getDefault())}" } ?: ""}"
 }
